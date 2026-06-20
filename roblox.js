@@ -1,6 +1,6 @@
 import config from "./config.js";
 
-const BASE_URL       = "https://groups.roblox.com";
+const BASE_URL = "https://groups.roblox.com";
 const OPEN_CLOUD_URL = "https://apis.roblox.com";
 
 // Fetch all roles/ranks in the group
@@ -27,54 +27,80 @@ export function findUserInGame(partialName, playerList) {
   const lower = trimmed.toLowerCase();
 
   // 1. Exact username match
-  const exactUsername = playerList.find(p => p.username.toLowerCase() === lower);
-  if (exactUsername) return { user: exactUsername, ambiguous: false, matches: [] };
+  const exactUsername = playerList.find(
+    (p) => p.username.toLowerCase() === lower
+  );
+  if (exactUsername)
+    return { user: exactUsername, ambiguous: false, matches: [] };
 
   // 2. Exact display name match
-  const exactDisplay = playerList.find(p => p.displayName.toLowerCase() === lower);
-  if (exactDisplay) return { user: exactDisplay, ambiguous: false, matches: [] };
+  const exactDisplay = playerList.find(
+    (p) => p.displayName.toLowerCase() === lower
+  );
+  if (exactDisplay)
+    return { user: exactDisplay, ambiguous: false, matches: [] };
 
   // 3. Partial matches — username starts with typed name
-  const partialUsername = playerList.filter(p => p.username.toLowerCase().startsWith(lower));
-  if (partialUsername.length === 1) return { user: partialUsername[0], ambiguous: false, matches: [] };
+  const partialUsername = playerList.filter((p) =>
+    p.username.toLowerCase().startsWith(lower)
+  );
+  if (partialUsername.length === 1)
+    return { user: partialUsername[0], ambiguous: false, matches: [] };
   if (partialUsername.length > 1) {
     return {
       user: null,
       ambiguous: true,
-      matches: partialUsername.slice(0, 5).map(p => `${p.displayName} (@${p.username})`),
+      matches: partialUsername
+        .slice(0, 5)
+        .map((p) => `${p.displayName} (@${p.username})`),
     };
   }
 
   // 4. Partial matches — display name starts with typed name
-  const partialDisplay = playerList.filter(p => p.displayName.toLowerCase().startsWith(lower));
-  if (partialDisplay.length === 1) return { user: partialDisplay[0], ambiguous: false, matches: [] };
+  const partialDisplay = playerList.filter((p) =>
+    p.displayName.toLowerCase().startsWith(lower)
+  );
+  if (partialDisplay.length === 1)
+    return { user: partialDisplay[0], ambiguous: false, matches: [] };
   if (partialDisplay.length > 1) {
     return {
       user: null,
       ambiguous: true,
-      matches: partialDisplay.slice(0, 5).map(p => `${p.displayName} (@${p.username})`),
+      matches: partialDisplay
+        .slice(0, 5)
+        .map((p) => `${p.displayName} (@${p.username})`),
     };
   }
 
   // 5. Partial matches — username contains typed name
-  const containsUsername = playerList.filter(p => p.username.toLowerCase().includes(lower));
-  if (containsUsername.length === 1) return { user: containsUsername[0], ambiguous: false, matches: [] };
+  const containsUsername = playerList.filter((p) =>
+    p.username.toLowerCase().includes(lower)
+  );
+  if (containsUsername.length === 1)
+    return { user: containsUsername[0], ambiguous: false, matches: [] };
   if (containsUsername.length > 1) {
     return {
       user: null,
       ambiguous: true,
-      matches: containsUsername.slice(0, 5).map(p => `${p.displayName} (@${p.username})`),
+      matches: containsUsername
+        .slice(0, 5)
+        .map((p) => `${p.displayName} (@${p.username})`),
     };
   }
 
   // 6. Partial matches — display name contains typed name
-  const containsDisplay = playerList.filter(p => p.displayName.toLowerCase().includes(lower));
-  if (containsDisplay.length === 1) return { user: containsDisplay[0], ambiguous: false, matches: [] };
+  const containsDisplay = playerList.filter((p) =>
+    p.displayName.toLowerCase().includes(lower)
+  );
+  if (containsDisplay.length === 1)
+    return { user: containsDisplay[0], ambiguous: false, matches: [] };
   if (containsDisplay.length > 1) {
     return {
       user: null,
       ambiguous: true,
-      matches: containsDisplay.slice(0, 5).map(p => `${p.displayName} (@${p.username})`),
+      matches: containsDisplay
+        .slice(0, 5)
+        .map((p) => `${p.displayName} (@${p.username})`),
     };
   }
 
@@ -85,7 +111,9 @@ export function findUserInGame(partialName, playerList) {
 export async function getUserRankInGroup(userId) {
   const res = await fetch(`${BASE_URL}/v1/users/${userId}/groups/roles`);
   if (!res.ok)
-    throw new Error(`Failed to fetch user group roles: ${res.status} ${res.statusText}`);
+    throw new Error(
+      `Failed to fetch user group roles: ${res.status} ${res.statusText}`
+    );
   const data = await res.json();
   const groupEntry = data.data?.find((g) => g.group.id === config.groupId);
   if (!groupEntry) return null;
@@ -109,7 +137,9 @@ export async function setUserRank(userId, rolesetId) {
   );
   if (!res.ok) {
     const errText = await res.text();
-    throw new Error(`Failed to set rank: ${res.status} ${res.statusText} — ${errText}`);
+    throw new Error(
+      `Failed to set rank: ${res.status} ${res.statusText} — ${errText}`
+    );
   }
   return true;
 }
